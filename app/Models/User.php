@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -17,9 +17,14 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
+    //ユーザーの編集可能項目はここに入れる（これ以外がユーザーが編集できないように保護する）
     protected $fillable = [
         'name',
         'email',
+        'postal_code',
+        'address',
+        'phone',
         'password',
     ];
 
@@ -41,4 +46,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function favorite_products()
+    {
+        //withTimestampsは中間テーブルで自動更新されないcreated_atとupdated_atを更新する
+        return $this->belongsToMany(Product::class)->withTimestamps();
+    }
 }

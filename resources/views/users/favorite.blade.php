@@ -12,7 +12,11 @@
       <div class="col-md-7 mt-2">
         <div class="d-inline-flex">
           <a href="{{ route('products.show', $favorite_product->id) }}" class="w-25">
+            @if ($favorite_product->image !== "")
+            <img src="{{ asset($favorite_product->image) }}" class="img-fluid w-100">
+            @else
             <img src="{{ asset('img/dummy.png')}}" class="img-fluid w-100">
+            @endif
           </a>
           <div class="container mt-3">
             <h5 class="w-100 samuraimart-favorite-item-text">{{ $favorite_product->name }}</h5>
@@ -36,6 +40,7 @@
           <input type="hidden" name="id" value="{{$favorite_product->id}}">
           <input type="hidden" name="name" value="{{$favorite_product->name}}">
           <input type="hidden" name="price" value="{{$favorite_product->price}}">
+          <input type="hidden" name="image" value="{{$favorite_product->image}}">
           <input type="hidden" name="qty" value="1">
           <input type="hidden" name="weight" value="0">
           <button type="submit" class="btn samuraimart-favorite-add-cart">カートに入れる</button>

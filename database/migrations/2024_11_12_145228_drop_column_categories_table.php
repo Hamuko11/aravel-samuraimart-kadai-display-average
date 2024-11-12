@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('image')->default('');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropColumn('major_category_name');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('image');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('major_category_name');
         });
     }
 };

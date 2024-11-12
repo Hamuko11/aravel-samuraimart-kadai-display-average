@@ -48,6 +48,9 @@ class CartController extends Controller
                 'qty' => $request->qty,
                 'price' => $request->price,
                 'weight' => $request->weight,
+                'options' => [
+                    'image' => $request->image,
+                ]
             ]
         );
         //商品をカートに追加したあとそのまま商品の個別ページにリダイレクトする

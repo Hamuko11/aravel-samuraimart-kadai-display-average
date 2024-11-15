@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 //商品登録時にカテゴリ選択できるようにする
 use App\Models\Category;
+use App\Models\MajorCategory;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -30,6 +31,7 @@ class ProductController extends Controller
             $total_count = Product::Where('category_id', $request->category)->count();
             //カテゴリ名の取得
             $category = Category::find($request->category);
+            $major_category = MajorCategory::find($category->major_category_id);
         } elseif ($keyword !== null) {
             //受け取った名前を持つ商品データの取得
             //部分一致('name', 'like', "%{$keyword}%")、完全一致('name', '=', $keyword)
@@ -38,18 +40,20 @@ class ProductController extends Controller
             $total_count = $products->total();
             //カテゴリ名の取得
             $category = null;
+            $major_category = null;
         } else {
             $products = Product::sortable()->paginate(15);
             $total_count = "";
             $category = null;
+            $major_category = null;
         }
         //最初に変数を定義しておくまた15商品ごとにページを区切る
         //$products = Product::paginate(15);
         //↑意味はデータからすべての商品データを取得して変数に代入
         $categories = Category::all();
-        $major_category_names = Category::pluck('major_category_name')->unique();
+        $major_categories = MajorCategory::all();
         //↑の意味は全カテゴリからmajor_category_nameカラムのみを取得し、uniqueで重複を削除している
-        return view('products.index', compact('products', 'category', 'categories', 'major_category_names', 'total_count', 'keyword'));
+        return view('products.index', compact('products', 'category', 'major_category', 'categories', 'major_categories', 'total_count', 'keyword'));
         //↑第二引数にコントローラからビューに渡す変数を指定する
     }
 

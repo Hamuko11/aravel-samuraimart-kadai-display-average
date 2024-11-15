@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    //退会用のsoftdeletesトレイトの追加
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    //論理削除カラムが日付型であることを宣言する
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.

@@ -81,4 +81,11 @@ class UserController extends Controller
         $favorite_products = $user->favorite_products;
         return view('users.favorite', compact('favorite_products'));
     }
+
+    //退会用の画面の設定 deleteメソッドで論理削除ができる
+    public function destroy(Request $request)
+    {
+        Auth::user()->delete();
+        return redirect('/');
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\MajorCategory;
+use App\Models\Product;
 
 class WebController extends Controller
 {
@@ -15,6 +16,8 @@ class WebController extends Controller
         //カテゴリーカラムを配列で取得する（pluck）
         //$major_category_names = Category::pluck('major_category_name')->unique();
         $major_categories = MajorCategory::all();
-        return view('web.index', compact('major_categories', 'categories'));
+        //新着商品を４つ取得する
+        $recently_products = Product::orderBy('created_at', 'desc')->take(4)->get();
+        return view('web.index', compact('major_categories', 'categories', 'recently_products'));
     }
 }

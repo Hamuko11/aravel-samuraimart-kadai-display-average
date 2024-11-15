@@ -175,4 +175,10 @@ body {
   .review-score-color:focus{
     color: #0fbe9f;
   }
+
+  .samuraimart-delete-submit-button{
+    border-radius: 2px;
+    color: #ffffff;
+    background-color: #d94b0e;
+  }
  }

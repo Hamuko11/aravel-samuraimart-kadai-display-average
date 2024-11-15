@@ -5,7 +5,7 @@
 
   <div class="col-2">
     {{--呼び出すcomponentに連想配列を作成し、コンポネントに変数を渡す--}}
-    @component('components.sidebar',['categories'=>$categories,'major_category_names'=>$major_category_names])
+    @component('components.sidebar',['categories'=>$categories,'major_categories'=>$major_categories])
     @endcomponent
   </div>
 
@@ -13,7 +13,7 @@
 
     <div class="container">
       @if($category !== null)
-      <a href="{{route('products.index')}}">トップ</a> > <a href="#">{{$category->major_category_name}}</a> > {{$category->name}}
+      <a href="{{route('products.index')}}">トップ</a> > <a href="#">{{$major_category->name}}</a> > {{$category->name}}
       <h1>{{$category->name}}の商品一覧{{$total_count}}件</h1>
       {{--↑カテゴリ検索↓検索リストでの検索--}}
       @elseif($keyword !== null)

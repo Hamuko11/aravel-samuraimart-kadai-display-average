@@ -33,14 +33,13 @@ class CategoryController extends AdminController
         $grid->column('major_category_id', __('Major category name'))->editable('select', MajorCategory::all()->pluck('name', 'id'));
         $grid->column('created_at', __('Created at'))->sortable();
         $grid->column('updated_at', __('Updated at'))->sortable();
-        //$grid->filter(function($filter){の中にフィルタ条件の追加
-        //$filter->like()は部分一致のフィルタを追加第一引数にカラム名、第二引数に画面表示名を入れる
-        //$filter->betweenは範囲指定でdateimeを入れるとカレンダー表示できる
+
         $grid->filter(function ($filter) {
             $filter->like('name', 'カテゴリー名');
             $filter->in('major_category_id', '親カテゴリー名')->multipleSelect(MajorCategory::all()->pluck('name', 'id'));
             $filter->between('created_at', '登録日')->datetime();
         });
+
         return $grid;
     }
 
@@ -57,7 +56,7 @@ class CategoryController extends AdminController
         $show->field('id', __('Id'));
         $show->field('name', __('Name'));
         $show->field('description', __('Description'));
-        $show->field('major_category_name', __('Major category name'));
+        $show->field('major_category.name', __('Major category name'));
         $show->field('created_at', __('Created at'));
         $show->field('updated_at', __('Updated at'));
 
@@ -75,7 +74,7 @@ class CategoryController extends AdminController
 
         $form->text('name', __('Name'));
         $form->textarea('description', __('Description'));
-        $form->text('major_category_id', __('Major category name'))->options(MajorCategory::all()->pluck('name', 'id'));
+        $form->select('major_category_id', __('Major Category Name'))->options(MajorCategory::all()->pluck('name', 'id'));
 
         return $form;
     }

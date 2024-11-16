@@ -11,47 +11,26 @@
     <h1>おすすめ商品</h1>
     <div class="row">
 
+      @foreach($recommend_products as $recommend_product)
       <div class="col-4">
-        <a href="#">
-          <img src="{{asset('img/chestnut.jpg')}}" class="img-thumbnail">
+        <a href="{{route('products.show',$recommend_product)}}">
+          @if($recommend_product->image!=="")
+          <img src="{{asset($recommend_product->image)}}" class="img-thumbnail">
+          @else
+          <img src="{{asset('img\dummy.png')}}" class="img-thumbnail">
+          @endif
         </a>
         <div class="row">
           <div class="col-12">
             <p class="samuraimart-product-label mt-2">
-              和栗の詰め合わせ
-              <label>￥2000</label>
+              {{$recommend_product->name}}
+              <label>￥{{$recommend_product->price}}</label>
             </p>
           </div>
         </div>
       </div>
 
-      <div class="col-4">
-        <a href="#">
-          <img src="{{ asset('img/persimmon.jpg') }}" class="img-thumbnail">
-        </a>
-        <div class="row">
-          <div class="col-12">
-            <p class="samuraimart-product-label mt-2">
-              おいしい柿<br>
-              <label>￥500</label>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-4">
-        <a href="#">
-          <img src="{{ asset('img/orange.jpg') }}" class="img-thumbnail">
-        </a>
-        <div class="row">
-          <div class="col-12">
-            <p class="samuraimart-product-label mt-2">
-              旬なみかん<br>
-              <label>￥1200</label>
-            </p>
-          </div>
-        </div>
-      </div>
+      @endforeach
 
     </div>
 

@@ -29,10 +29,12 @@
       {{--formタグでカートへ追加する商品IDをCartControllerのstoreアクションに送信する--}}
       <form method="POST" action="{{route('carts.store')}}" class="m-3 align-items-end">
         @csrf
+        {{--カートに送りたい情報を記載--}}
         <input type="hidden" name="id" value="{{$product->id}}">
         <input type="hidden" name="name" value="{{$product->name}}">
         <input type="hidden" name="price" value="{{$product->price}}">
         <input type="hidden" name="image" value="{{$product->image}}">
+        <input type="hidden" name="carriage" value="{{$product->carriage_flag}}">
         <div class="form-group row">
           <label for="quantity" class="col-sm-2 col-form-label">数量</label>
           <div class="col-sm-10">

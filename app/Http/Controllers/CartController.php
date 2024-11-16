@@ -20,14 +20,26 @@ class CartController extends Controller
         //ユーザーIDを元にこれまで追加したカートの中身を変数$cartに代入して保存
         //また合計金額を計算して$totalに保存しています。
         $cart = Cart::instance(Auth::user()->id)->content();
-
+        //購入した商品のうち１つでも送料ありがあるか判断し、ある場合のみ$has_carriage_costフラグをtrueにする
         $total = 0;
+        $has_carriage_cost = false;
+        $carriage_cost = 0;
 
         foreach ($cart as $c) {
             $total += $c->qty * $c->price;
+            if ($c->options->carriage) {
+                $has_carriage_cost = true;
+            }
         }
 
-        return view('carts.index', compact('cart', 'total'));
+        //上記ifにてtrueになった場合のみ$totalに送料を追加する
+        //別途送料も表記するので$carriage_costを設定しておく
+        if ($has_carriage_cost) {
+            $total += env('CARRIAGE');
+            $carriage_cost = env('CARRIAGE');
+        }
+
+        return view('carts.index', compact('cart', 'total', 'carriage_cost'));
     }
 
 
@@ -50,6 +62,7 @@ class CartController extends Controller
                 'weight' => $request->weight,
                 'options' => [
                     'image' => $request->image,
+                    'carriage' => $request->carriage,
                 ]
             ]
         );
@@ -68,18 +81,57 @@ class CartController extends Controller
     //購入済みかを確認するためのカラム(buy_flag)をshoppingcartテーブルに追加している
     public function destroy(Request $request)
     {
-        //ショッピングカートの中身のデータを変数$user_shoppingcartに保存
+        //購入時にshoppingartテーブルに新規レコードを追加する際に必要なidの値を作成するためレコードを取得している
+        //ショッピングカートの中身のデータを変数$numberに保存
+        $user_shoppingcarts = DB::table('shoppingcart')->get();
+        $number = DB::table('shoppingcart')->where('instance', Auth::user()->id)->count();
+
         //カートの数を取得
-        $user_shoppingcarts = DB::table('shoppingcart')->where('instance', Auth::user()->id)->get();
         $count = $user_shoppingcarts->count();
-        //新しくDBに登録するカートのデータ用にカートIDを一つ増やす
+
+        //新しくDBに登録するカートのデータ用にカートIDと取得したナンバーIDを一つ増やす
         $count += 1;
+        $number += 1;
+
+        $cart = Cart::instance(Auth::user()->id)->content();
+
+        $price_total = 0;
+        $qty_total = 0;
+        $has_carriage_cost = false;
+
+        foreach ($cart as $c) {
+            $price_total += $c->qty * $c->price;
+            $qty_total += $c->qty;
+            if ($c->options->carriage) {
+                $has_carriage_cost = true;
+            }
+        }
+
+        if ($has_carriage_cost) {
+            $price_total += env('CARRIAGE');
+        }
+
         //ユーザーIDを使ってカートの商品情報をデータベースに保存
         Cart::instance(Auth::user()->id)->store($count);
+
         //カートの中身を数0から取得したカートの個数に更新して、購入済みにフラグも変更する
         //DB::table('shoppingcart')でDB内のshoppingcartテーブルにアクセス
         //その後whereを使用してユーザーIDと上記のinstanceに保存した$countを使ってカートデータを更新
-        DB::table('shoppingcart')->where('instance', Auth::user()->id)->where('number', null)->update(['number' => $count, 'buy_flag' => true]);
+
+        DB::table('shoppingcart')->where('instance', Auth::user()->id)
+            ->where('number', null)
+            ->update(
+                [
+                    //ランダムなコードを作る
+                    'code' => substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 10),
+                    'number' => $number,
+                    'price_total' => $price_total,
+                    'qty' => $qty_total,
+                    'buy_flag' => true,
+                    'updated_at' => date("Y/m/d H:i:s")
+                ]
+            );
+
         //カートを空にする
         Cart::instance(Auth::user()->id)->destroy();
 

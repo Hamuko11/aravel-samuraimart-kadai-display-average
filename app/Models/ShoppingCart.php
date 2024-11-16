@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ShoppingCart extends Model
+{
+    use HasFactory;
+    //モデルにするテーブルにshoppingcartテーブルを指定
+    protected $table = 'shoppingcart';
+}

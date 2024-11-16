@@ -34,13 +34,14 @@
         </form>
       </div>
       <div class="col-md-3 d-flex align-items-center justify-content-end">
-        {{--お気に入りからも商品追加できるようにする--}}
+        {{--お気に入りからも商品追加できるようにする（カートに送りたい情報を記載）--}}
         <form method="POST" action="{{route('carts.store')}}" class="m-3 align-items-end">
           @csrf
           <input type="hidden" name="id" value="{{$favorite_product->id}}">
           <input type="hidden" name="name" value="{{$favorite_product->name}}">
           <input type="hidden" name="price" value="{{$favorite_product->price}}">
           <input type="hidden" name="image" value="{{$favorite_product->image}}">
+          <input type="hidden" name="carriage" value="{{$favorite_product->carriage_flag}}">
           <input type="hidden" name="qty" value="1">
           <input type="hidden" name="weight" value="0">
           <button type="submit" class="btn samuraimart-favorite-add-cart">カートに入れる</button>

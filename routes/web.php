@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WebController;
-
+use App\Http\Controllers\CheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,11 +45,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('users/mypage/password', 'update_password')->name('mypage.update_password');
         Route::get('users/mypage/favorite', 'favorite')->name('mypage.favorite');
         Route::delete('users/mypage/delete', 'destroy')->name('mypage.destroy');
+        Route::get('users/mypage/cart_history', 'cart_history_index')->name('mypage.cart_history');
+        Route::get('users/mypage/cart_history/{num}', 'cart_history_show')->name('mypage.cart_history_show');
     });
 
     Route::controller(CartController::class)->group(function () {
         Route::get('users/carts', 'index')->name('carts.index');
         Route::post('users/carts', 'store')->name('carts.store');
         Route::delete('users/carts', 'destroy')->name('carts.destroy');
+    });
+
+    Route::controller(CheckoutController::class)->group(function () {
+        Route::get('checkout', 'index')->name('checkout.index');
+        Route::post('checkout', 'store')->name('checkout.store');
+        Route::get('checkout/success', 'success')->name('checkout.success');
     });
 });

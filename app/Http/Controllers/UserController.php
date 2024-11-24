@@ -6,6 +6,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ShoppingCart;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Gloudemans\Shoppingcart\Facades\Cart;
+//↑ショッピングカートのパッケージ
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -87,5 +92,46 @@ class UserController extends Controller
     {
         Auth::user()->delete();
         return redirect('/');
+    }
+    //注文履歴の一覧を表示する(先ほど作成したShoppingCart::getCurrentUserOrders()を呼び出す)
+    public function cart_history_index(Request $request)
+    {
+        $page = $request->page !== null ? $request->page : 1;
+        $user_id = Auth::user()->id;
+        $billings = ShoppingCart::getCurrentUserOrders($user_id);
+        $total = count($billings);
+        $billings = new LengthAwarePaginator(array_slice($billings, ($page - 1) * 15, 15), $total, 15, $page, array('path' => $request->url()));
+
+        return view('users.cart_history_index', compact('billings', 'total'));
+    }
+
+    //注文番号を指定して注文データを取得する（LaravelShoppingcartのライブラリを使用）
+    public function cart_history_show(Request $request)
+    {
+        //アイテム番号を$numに入れる
+        $num = $request->num;
+        $user_id = Auth::user()->id;
+        //shoppingcart テーブルで、指定したユーザー（instance）とアイテム番号（number）に一致するレコードを検索して最初の一致レコードを変数に格納。
+        $cart_info = DB::table('shoppingcart')->where('instance', $user_id)->where('number', $num)->get()->first();
+        //以下３行で過去に購入したカート情報をライブラリ経由で取り出すため、以下のrestoreメソッド呼び$cart_contentsに格納
+        //ただしrestoreで呼ぶとShoppingcartテーブルからデータが消えるためstoreで再度保存する
+        Cart::instance($user_id)->restore($cart_info->identifier);
+        $cart_contents = Cart::content();
+        Cart::instance($user_id)->store($cart_info->identifier);
+        Cart::destroy();
+        //storeで戻したときにcodeカラムやnumberカラムなどの一部データが復元できない制約のため、updateで書き戻しを行う
+        DB::table('shoppingcart')->where('instance', $user_id)
+            ->where('number', null)
+            ->update(
+                [
+                    'code' => $cart_info->code,
+                    'number' => $num,
+                    'price_total' => $cart_info->price_total,
+                    'qty' => $cart_info->qty,
+                    'buy_flag' => $cart_info->buy_flag,
+                    'updated_at' => $cart_info->updated_at
+                ]
+            );
+        return view('users.cart_history_show', compact('cart_contents', 'cart_info'));
     }
 }

@@ -73,42 +73,19 @@
     </div>
 
     {{--カートの中身を購入できるようにする--}}
-    <form method="POST" action="{{route('carts.destroy')}}" class="d-flex justify-content-end mt-3">
-      @csrf
-      <input type="hidden" name="_method" value="DELETE">
+    {{--<form method="POST" action="{{route('carts.destroy')}}" class="d-flex justify-content-end mt-3">--}}
+    {{--@csrf--}}
+    {{--<input type="hidden" name="_method" value="DELETE">--}}
+    <div class="d-flex justify-content-end mt-3">
       <a href="{{route('top')}}" class="btn samuraimart-favorite-button border-dark text-dark mr-3">
         買い物を続ける
       </a>
       @if($total>0)
-      {{--以下が画面のさらに上に出すモーダルウィンドを表示する記述ウインドウ使用とIDの指定をしている
-        --}}
-      <div class="btn samuraimart-submit-button" data-bs-toggle="modal" data-bs-target="#buy-confirm-modal">購入を確定する</div>
+      <a href="{{route('checkout.index')}}" class="btn samuraimart-submit-button">購入に進む</a>
       @else
-      <div class="btn samuraimart-submit-button disabled" data-bs-toggle="modal" data-bs-target="#buy-confirm-modal">購入を確定する</div>
+      <button class="btn samuraimart-submit-button disabled">購入に進む</button>
       @endif
-      {{--モーダルウインドウのコード
-        data-backdrop="static"はモーダルダイアログの背景
-        data-keyboard="falseはモーダルを閉じない　bootrapの例どおり--}}
-      <div class="modal fade" id="buy-confirm-modal" data-backdrop="static" data-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="sataticBackdropLabel">購入を確定しますか？</h5>
-              <button type="button" class="close" data-bs-dismiss="modal" aria-label="閉じる">
-                {{--&timesは×--}}
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn samuraimart-favorite-button border-dark text-dark" data-bs-dismiss="modal">閉じる</button>
-              <button type="submit" class="btn samuraimart-submit-button">購入</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </form>
-
+    </div>
   </div>
 </div>
 @endsection

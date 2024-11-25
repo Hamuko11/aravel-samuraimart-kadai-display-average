@@ -16,6 +16,29 @@
         <h1 class="">
           {{$product->name}}
         </h1>
+
+        {{-- 平均評価の星を色分けで表示 --}}
+        @if ($averageScore)
+        <div class="review-score">
+          @for ($i = 1; $i <= 5; $i++)
+            @if ($i <=floor($averageScore))
+            {{-- 緑色の星 (満たされた部分) --}}
+            <span class="starfull">★</span>
+            @elseif ($i - $averageScore < 1 && $i> $averageScore)
+              {{-- 半分の星 (評価が小数の場合) --}}
+              <span class="starhalf">★</span>
+              @else
+              {{-- 灰色の星 (満たされない部分) --}}
+              <span class="starempty">★</span>
+              @endif
+              @endfor
+              {{ $averageScore }}
+        </div>
+        @else
+        <p class="reviewempty"> ★ ★ ★ ★ ★</p>
+        @endif
+
+
         <p class="">
           {{$product->description}}
         </p>
@@ -77,7 +100,29 @@
     <div class="offset-1 col-11">
       <hr class="w-100">
       <h3 class="float-left">カスタマーレビュー</h3>
+      {{-- 平均評価の星を色分けで表示 --}}
+      @if ($averageScore)
+      <div class="review-score">
+        @for ($i = 1; $i <= 5; $i++)
+          @if ($i <=floor($averageScore))
+          {{-- 緑色の星 (満たされた部分) --}}
+          <span class="starfull">★</span>
+          @elseif ($i - $averageScore < 1 && $i> $averageScore)
+            {{-- 半分の星 (評価が小数の場合) --}}
+            <span class="starhalf">★</span>
+            @else
+            {{-- 灰色の星 (満たされない部分) --}}
+            <span class="starempty">★</span>
+            @endif
+            @endfor
+            {{ $averageScore }}
+      </div>
+      @else
+      <p class="reviewempty">★ ★ ★ ★ ★</p>
+      @endif
     </div>
+
+
 
     <div class="offset-1 col-10">
       <div class="row">

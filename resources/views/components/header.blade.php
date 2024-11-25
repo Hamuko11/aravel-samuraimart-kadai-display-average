@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-light shadow-sm samuraimart-header-container">
   <div class="container">
-    <a class="navbar-brand" href="{{ url('products/') }}">
+    <a class="navbar-brand" href="{{ url('/') }}">
       <img src="{{asset('img/logo.jpg')}}">
     </a>
     {{--inputのname要素（入力項目）を取得する--}}

@@ -171,6 +171,7 @@ body {
 
  .review-score-color{
   color: #0fbe9f;
+ }
 
   .review-score-color:focus{
     color: #0fbe9f;
@@ -185,4 +186,29 @@ body {
   th,td{
     background-color: #f8fafc !important;
   }
- }
+
+  /* 星全体のスタイル */
+.star {
+    font-size: 1.5em; /* 星の大きさ */
+    margin-right: 2px; /* 星間のスペース */
+}
+
+/* 緑色の星 (満たされた部分) */
+.starfull {
+    color:#0fbe9f;
+}
+
+/* 半分の星 */
+.starhalf {
+    color:#0fbe9f; /* 半分の星を同じ色にする */
+    opacity: 0.5; /* 半透明で表現する */
+}
+
+/* 灰色の星 (満たされない部分) */
+.starempty {
+    color: lightgray;
+}
+
+.reviewempty{
+  color: lightgray;
+}

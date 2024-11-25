@@ -23,12 +23,38 @@
         <div class="row">
           <div class="col-12">
             <p class="samuraimart-product-label mt-2">
-              {{$recommend_product->name}}
-              <label>￥{{$recommend_product->price}}</label>
+
+              {{ $recommend_product->name }}<br>
+
+
+              {{-- 平均スコアの星表示 --}}
+
+              @if ($recommend_product->averageScore)
+              @for ($i = 1; $i <= 5; $i++)
+                @if ($i <=floor($recommend_product->averageScore))
+                <span class="starfull">★</span>
+                @elseif ($i - $recommend_product->averageScore < 1)
+                  <span class="starhalf">★</span>
+                  @else
+                  <span class="starempty">★</span>
+                  @endif
+                  @endfor
+                  <span class="small">{{ $recommend_product->averageScore }}</span>
+                  @else
+                  <span class="reviewempty">★ ★ ★ ★ ★</span>
+                  @endif
+
+                  <br>
+
+
+
+
+                  <label>￥{{$recommend_product->price}}</label>
             </p>
           </div>
         </div>
       </div>
+
 
       @endforeach
 
@@ -54,7 +80,26 @@
           <div class="col-12">
             <p class="samuraimart-product-label mt-2">
               {{$recently_product->name}}<br>
-              <label>￥{{$recently_product->price}}</label>
+
+              {{-- 平均スコアの星表示 --}}
+
+              @if ($recently_product->averageScore)
+              @for ($i = 1; $i <= 5; $i++)
+                @if ($i <=floor($recently_product->averageScore))
+                <span class="starfull">★</span>
+                @elseif ($i - $$recently_product->averageScore < 1)
+                  <span class="starhalf">★</span>
+                  @else
+                  <span class="starempty">★</span>
+                  @endif
+                  @endfor
+                  <span class="small">{{ $recently_product->averageScore }}</span>
+                  @else
+                  <span class="reviewempty">★ ★ ★ ★ ★</span>
+                  @endif
+                  <br>
+
+                  <label>￥{{$recently_product->price}}</label>
             </p>
           </div>
         </div>

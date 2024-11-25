@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 //商品登録時にカテゴリ選択できるようにする
 use App\Models\Category;
 use App\Models\MajorCategory;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -53,9 +54,26 @@ class ProductController extends Controller
         $categories = Category::all();
         $major_categories = MajorCategory::all();
         //↑の意味は全カテゴリからmajor_category_nameカラムのみを取得し、uniqueで重複を削除している
-        return view('products.index', compact('products', 'category', 'major_category', 'categories', 'major_categories', 'total_count', 'keyword'));
+
+        // 各商品の平均スコアを計算
+        foreach ($products as $product) {
+            $product->averageScore = $product->reviews->avg('score') ? round($product->reviews->avg('score') * 2) / 2 : null;
+        }
+
+        return view('products.index', compact(
+            'products',
+            'category',
+            'major_category',
+            'categories',
+            'major_categories',
+            'total_count',
+            'keyword'
+        ));
         //↑第二引数にコントローラからビューに渡す変数を指定する
+
+
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -101,8 +119,13 @@ class ProductController extends Controller
         //商品のデータが保存されているstoreで定義した商品情報が保存されている変数を渡す
         //追加でレビューも渡す
         $reviews = $product->reviews()->get();
-        return view('products.show', compact('product', 'reviews'));
+
+        // 平均スコアを取得 (0.5刻みに丸める)
+        $averageScore = round($product->reviews()->avg('score') * 2) / 2;
+        return view('products.show', compact('product', 'reviews', 'averageScore'));
     }
+
+
 
     /**
      * Show the form for editing the specified resource.

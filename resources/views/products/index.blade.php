@@ -45,7 +45,31 @@
             <div class="col-12">
               <p class="samuraimart-product-label mt-2">
                 {{$product->name}}<br>
-                <label>￥{{$product->price}}</label>
+
+                {{-- 平均評価の星を色分けで表示 --}}
+                @if ($product->averageScore)
+
+                @for ($i = 1; $i <= 5; $i++)
+                  @if ($i <=floor($product->averageScore))
+                  {{-- 緑色の星 (満たされた部分) --}}
+                  <span class="starfull">★</span>
+                  @elseif ($i - $product->averageScore < 1 && $i> $product->averageScore)
+                    {{-- 半分の星 (評価が小数の場合) --}}
+                    <span class="starhalf">★</span>
+                    @else
+                    {{-- 灰色の星 (満たされない部分) --}}
+                    <span class="starempty">★</span>
+                    @endif
+                    @endfor
+                    {{ $product->averageScore }}
+
+                    @else
+                    <span class="reviewempty">★ ★ ★ ★ ★</span>
+                    @endif
+                    <br>
+
+
+                    <label>￥{{$product->price}}</label>
               </p>
             </div>
           </div>
